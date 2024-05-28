@@ -1,0 +1,32 @@
+body {
+    font-size: 30px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+}
+
+#message {
+    font-family: monospace, sans-serif;
+    font-size: 30px;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.message_input {
+    display: flex;
+    flex-direction: column;
+}
+
+#submit {
+    font-size: 30px;
+}

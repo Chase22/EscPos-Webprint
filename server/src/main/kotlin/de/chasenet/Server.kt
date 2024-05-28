@@ -1,5 +1,7 @@
 package de.chasenet
 
+import com.github.anastaciocintra.escpos.EscPosConst.Justification
+import com.github.anastaciocintra.escpos.Style
 import io.javalin.Javalin
 import io.javalin.http.staticfiles.Location
 
@@ -8,10 +10,11 @@ fun runServer() {
         config.staticFiles.add { staticFiles ->
             staticFiles.location = Location.CLASSPATH
             staticFiles.directory = "public"
-            staticFiles.hostedPath = "/"
+            staticFiles.hostedPath = "/assets"
             staticFiles.precompress = true
         }
     }
+        .get("/") { ctx -> ctx.sendHttp() }
         .post("/message") { ctx ->
             val message = ctx.formParam("message")
             if (message == null) {
@@ -24,8 +27,21 @@ fun runServer() {
                 ctx.result("Message too long")
                 return@post
             }
+            val bold = ctx.formParam("bold") == "on" ?: false
+            val underline = ctx.formParam("underline") == "on" ?: false
+            val justification = when(ctx.formParam("justification")) {
+                "center" -> Justification.Center
+                "right" -> Justification.Right
+                else -> Justification.Left_Default
+            }
 
-            printMessage(message)
+            val style = Style().apply {
+                setBold(bold)
+                setUnderline(if(underline) Style.Underline.OneDotThick else Style.Underline.None_Default)
+                setJustification(justification)
+            }
+
+            printMessage(style, message)
             ctx.result("Printed Successfully")
         }.post("/image") { ctx ->
             ctx.uploadedFiles()
