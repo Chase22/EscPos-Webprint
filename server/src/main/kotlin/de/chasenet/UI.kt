@@ -55,6 +55,7 @@ fun FlowContent.options() {
         h3 { +"Options" }
         checkboxRow("bold", "Bold")
         checkboxRow("underline", "Underline")
+        checkboxRow("white_on_black", "White on Black")
     }
 }
 
@@ -65,6 +66,7 @@ fun FlowContent.checkboxRow(name: String, label: String) {
             value = "true"
         }
         label {
+            id = "$name-label"
             htmlFor = name
             +label
         }

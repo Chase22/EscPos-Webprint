@@ -18,6 +18,7 @@ fun messageEndpoint(ctx: Context) {
     }
     val bold = ctx.booleanFormParam("bold")
     val underline = ctx.booleanFormParam("underline")
+    val whiteOnBlack = ctx.booleanFormParam("white_on_black")
 
     val justification = when (ctx.formParam("justification")) {
         "center" -> EscPosConst.Justification.Center
@@ -32,6 +33,7 @@ fun messageEndpoint(ctx: Context) {
         setUnderline(if (underline) Style.Underline.OneDotThick else Style.Underline.None_Default)
         setJustification(justification)
         setFontSize(fontWidth, fontHeight)
+        setColorMode(if (whiteOnBlack) Style.ColorMode.WhiteOnBlack else Style.ColorMode.BlackOnWhite_Default)
     }
 
     ctx.uploadedFile("image")?.let {
