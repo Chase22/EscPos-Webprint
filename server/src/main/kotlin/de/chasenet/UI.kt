@@ -14,7 +14,12 @@ fun Context.sendHttp() {
             link(rel = "stylesheet", href = "/assets/style.css")
         }
         body {
-            form(action = "/message", method = FormMethod.post, encType = FormEncType.multipartFormData) {
+            form(
+                action = "/message",
+                method = FormMethod.post,
+                encType = FormEncType.multipartFormData,
+            ) {
+                target = "_blank"
                 autoComplete = false
                 messageInput()
                 options()
