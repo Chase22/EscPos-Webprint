@@ -1,0 +1,5 @@
+POST localhost:8080/message
+Content-Type: application/x-www-form-urlencoded
+
+message = Test message &
+bold = true

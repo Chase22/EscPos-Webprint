@@ -22,6 +22,7 @@ fun Context.sendHttp() {
                 fontSize("font_height", "Font Height")
                 fontSize("font_width", "Font Width")
             }
+            api()
         }
     })
 }
@@ -30,6 +31,7 @@ fun FlowContent.messageInput() {
     div(classes = "message_input") {
         h3 { +"Message" }
         textArea(cols = "50") {
+            required = true
             name = "message"
             placeholder = "Enter your message here"
         }
@@ -52,6 +54,7 @@ fun FlowContent.checkboxRow(name: String, label: String) {
     div(classes = "checkbox_row") {
         checkBoxInput(name=name) {
             id = name
+            value = "true"
         }
         label {
             htmlFor = name
@@ -65,10 +68,16 @@ fun FlowContent.fontSize(name: String, label: String) {
         h3 {
             +label
         }
-        radioButtons(
-            name,
-            *1.rangeTo(8).map { it.toString() to it.toString() }.toTypedArray()
-        )
+        select {
+            id = name
+            this.name = name
+            1.rangeTo(8).forEach {
+                option {
+                    value = it.toString()
+                    +it.toString()
+                }
+            }
+        }
     }
 }
 
@@ -102,6 +111,34 @@ fun FlowContent.radioRow(name: String, value: String, label: String, checked: Bo
         label {
             htmlFor = value
             +label
+        }
+    }
+}
+
+fun FlowContent.api() {
+    div(classes = "api") {
+        h3 { +"API" }
+        a(href = "/assets/openapi.yaml") {
+            +"OpenAPI Specification"
+        }
+        p {
+            +"POST /message"
+        }
+        p {
+            +"Content-type: application/x-www-form-urlencoded"
+        }
+        p {
+            +"Parameters:"
+        }
+        pre {
+            code {
+                +"message: required\n"
+                +"bold: true|false, default: false\n"
+                +"underline: true|false, default: false\n"
+                +"justification: left|right|center, default: left\n"
+                +"font_width: 1-8, default: 1\n"
+                +"font_height: 1-8, default: 1\n"
+            }
         }
     }
 }

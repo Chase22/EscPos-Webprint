@@ -1,8 +1,6 @@
 package de.chasenet
 
-import com.github.anastaciocintra.escpos.Style
 import io.javalin.Javalin
-import io.javalin.http.Context
 import io.javalin.http.staticfiles.Location
 
 fun runServer() {
@@ -13,6 +11,8 @@ fun runServer() {
             staticFiles.hostedPath = "/assets"
             staticFiles.precompress = true
         }
+        config.http.prefer405over404 = true
+
     }
         .get("/") { ctx -> ctx.sendHttp() }
         .post("/message", ::messageEndpoint)

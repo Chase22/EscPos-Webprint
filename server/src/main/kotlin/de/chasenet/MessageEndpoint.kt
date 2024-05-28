@@ -38,7 +38,7 @@ fun messageEndpoint(ctx: Context) {
     ctx.result("Printed Successfully")
 }
 
-private fun Context.booleanFormParam(key: String) = formParam(key) == "on"
+private fun Context.booleanFormParam(key: String) = formParam(key).toBoolean()
 
 private fun Context.fontSizeParam(key: String) =
     formParam(key)?.let { Style.FontSize.valueOf("_$it") } ?: Style.FontSize._1

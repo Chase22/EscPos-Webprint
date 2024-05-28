@@ -1,0 +1,70 @@
+openapi: 3.0.3
+info:
+  title: Pos Webprint
+  description: Pos Webprint
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /message:
+    post:
+      summary: Print a message
+      operationId: postMessage
+      responses:
+        '200':
+          description: OK
+          content:
+            plain/text:
+                schema:
+                    type: string
+                    enum:
+                      - Printed Successfully
+        '400':
+          description: Bad Request
+          content:
+            plain/text:
+                schema:
+                    type: string
+                    enum:
+                      - Message too long
+                      - No message provided
+      requestBody:
+          required: true
+          content:
+              application/x-www-form-urlencoded:
+                schema:
+                    type: object
+                    properties:
+                      message:
+                          type: string
+                          description: The message to print
+                          maxLength: 100
+                      bold:
+                          type: boolean
+                          description: Whether to print the message in bold
+                          default: false
+                      underline:
+                            type: boolean
+                            description: Whether to underline the message
+                            default: false
+                      justification:
+                            type: string
+                            description: The justification of the message
+                            enum:
+                              - left
+                              - center
+                              - right
+                            default: left
+                      font_width:
+                            type: integer
+                            description: The width of the font
+                            minimum: 1
+                            maximum: 8
+                            default: 1
+                      font_height:
+                        type: integer
+                        description: The width of the font
+                        minimum: 1
+                        maximum: 8
+                        default: 1
+
