@@ -1,5 +1,9 @@
+:root {
+    --font-size: 30px;
+}
+
 body {
-    font-size: 30px;
+    font-size: var(--font-size);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -17,7 +21,14 @@ body {
 
 #message {
     font-family: monospace, sans-serif;
-    font-size: 30px;
+    font-size: var(--font-size);
+}
+
+select {
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    font-size: var(--font-size);
 }
 
 form {
@@ -35,5 +46,13 @@ form {
 }
 
 #submit {
-    font-size: 30px;
+    font-size: var(--font-size);
+}
+
+#image {
+    font-size: var(--font-size)
+}
+
+#message {
+    font-size: 20px;
 }

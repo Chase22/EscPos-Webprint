@@ -14,7 +14,7 @@ fun Context.sendHttp() {
             link(rel = "stylesheet", href = "/assets/style.css")
         }
         body {
-            form(action = "/message", method = FormMethod.post) {
+            form(action = "/message", method = FormMethod.post, encType = FormEncType.multipartFormData) {
                 autoComplete = false
                 messageInput()
                 options()
@@ -34,6 +34,14 @@ fun FlowContent.messageInput() {
             required = true
             name = "message"
             placeholder = "Enter your message here"
+        }
+        h6{
+            +"Image to be printed above the text"
+        }
+        fileInput {
+            id = "image"
+            name = "image"
+            accept = "image/*"
         }
         button(type = ButtonType.submit) {
             id = "submit"

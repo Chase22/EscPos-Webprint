@@ -34,6 +34,12 @@ fun messageEndpoint(ctx: Context) {
         setFontSize(fontWidth, fontHeight)
     }
 
+    ctx.uploadedFile("image")?.let {
+        if (it.size() > 0) {
+            printImage(it)
+        }
+    }
+
     printMessage(style, message)
     ctx.result("Printed Successfully")
 }
