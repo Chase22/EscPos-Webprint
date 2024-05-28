@@ -19,6 +19,8 @@ fun Context.sendHttp() {
                 messageInput()
                 options()
                 justification()
+                fontSize("font_height", "Font Height")
+                fontSize("font_width", "Font Width")
             }
         }
     })
@@ -58,6 +60,18 @@ fun FlowContent.checkboxRow(name: String, label: String) {
     }
 }
 
+fun FlowContent.fontSize(name: String, label: String) {
+    div(classes = "justification") {
+        h3 {
+            +label
+        }
+        radioButtons(
+            name,
+            *1.rangeTo(8).map { it.toString() to it.toString() }.toTypedArray()
+        )
+    }
+}
+
 fun FlowContent.justification() {
     div(classes = "justification") {
         h3 { +"Justification" }
@@ -67,14 +81,11 @@ fun FlowContent.justification() {
             "center" to "Center",
             "right" to "Right"
         )
-        radioRow("justification", "left", "Left", true)
-        radioRow("justification", "center", "Center")
-        radioRow("justification", "right", "Right")
     }
 }
 
 fun FlowContent.radioButtons(name: String, vararg values: Pair<String,String>) {
-    values.forEachIndexed { index, (label, value) ->
+    values.forEachIndexed { index, (value, label) ->
         radioRow(name, value, label, index == 0)
     }
 }
