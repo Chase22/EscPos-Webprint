@@ -3,3 +3,5 @@ plugins {
 }
 rootProject.name = "webPrint"
 
+include("server")
+include("escpos-coffee")
