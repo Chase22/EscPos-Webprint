@@ -28,7 +28,7 @@ fun messageEndpoint(ctx: Context) {
     val fontWidth = ctx.fontSizeParam("font_width")
     val fontHeight = ctx.fontSizeParam("font_height")
 
-    val style = Style().apply {
+    val style = Tm88iiStyle().apply {
         setBold(bold)
         setUnderline(if (underline) Style.Underline.OneDotThick else Style.Underline.None_Default)
         setJustification(justification)

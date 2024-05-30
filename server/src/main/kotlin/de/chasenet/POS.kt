@@ -15,10 +15,10 @@ import javax.imageio.ImageIO
 
 private val bitImageWrapper = RasterBitImageWrapper()
 
-private var socket = Socket("192.168.1.133", 9000)
-val pos = EscPos(socket.getOutputStream())
+private var socket = Socket("192.168.35.247", 9000)
+val pos = TM88II(socket.getOutputStream())
 
-fun printMessage(style: Style, message: String) {
+fun printMessage(style: Tm88iiStyle, message: String) {
     checkSocket()
 
     try {
