@@ -1,15 +1,16 @@
 package de.chasenet
 
-import com.github.anastaciocintra.escpos.EscPos
-import com.github.anastaciocintra.escpos.Style
 import com.github.anastaciocintra.escpos.image.BitonalOrderedDither
 import com.github.anastaciocintra.escpos.image.CoffeeImageImpl
 import com.github.anastaciocintra.escpos.image.EscPosImage
 import com.github.anastaciocintra.escpos.image.RasterBitImageWrapper
 import io.javalin.http.UploadedFile
+import qrcode.QRCode
 import java.awt.Image
 import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.net.Socket
 import javax.imageio.ImageIO
 
@@ -29,16 +30,37 @@ fun printMessage(style: Tm88iiStyle, message: String) {
     }
 }
 
-fun printImage(image: UploadedFile) {
+fun printImage(image: ByteArray) {
     checkSocket()
-    val convertedImage = ImageIO.read(image.content()).resize(512).let(::CoffeeImageImpl)
+    val convertedImage = readImage(ByteArrayInputStream(image))
     try {
-        pos.write(bitImageWrapper, EscPosImage(convertedImage, BitonalOrderedDither()))
+        pos.write(bitImageWrapper, convertedImage)
     } catch (e: IOException) {
         resetSocket()
-        pos.write(bitImageWrapper, EscPosImage(convertedImage, BitonalOrderedDither()))
+        pos.write(bitImageWrapper, convertedImage)
     }
 }
+
+
+fun printQr(message: String) {
+    checkSocket()
+    val qrCode = qrCode(message)
+    val image = readImage(ByteArrayInputStream(qrCode.renderToBytes()))
+    try {
+
+        pos.write(bitImageWrapper, image)
+    } catch (e: IOException) {
+        resetSocket()
+        pos.write(bitImageWrapper, image)
+    }
+}
+
+private fun readImage(inputStream: InputStream) =
+    ImageIO.read(inputStream).resize(512).let(::CoffeeImageImpl).let {
+        EscPosImage(it, BitonalOrderedDither())
+    }
+
+private fun qrCode(message: String) = QRCode.ofSquares().build(message)
 
 private fun checkSocket() {
     if (socket.isOutputShutdown || socket.isClosed || !socket.isConnected) {

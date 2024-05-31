@@ -3,27 +3,44 @@ package de.chasenet
 import com.github.anastaciocintra.escpos.EscPos
 import com.github.anastaciocintra.escpos.EscPosConst
 import com.github.anastaciocintra.escpos.Style
+import io.github.bucket4j.Bandwidth
+import io.github.bucket4j.Bucket
+import io.github.bucket4j.local.LocalBucketBuilder
 import io.javalin.http.Context
+import java.time.Duration
 
 enum class ImagePosition {
     above, below
 }
 
+private val bucket = Bucket.builder()
+    .addLimit(Bandwidth.builder()
+        .capacity(30)
+        .refillIntervally(30, Duration.ofMinutes(10)
+        ).build()
+    ).build()
+
 fun messageEndpoint(ctx: Context) {
+    if(!bucket.tryConsume(1)) {
+        ctx.status(429)
+        ctx.result("Too many prints. Please wait 10 minutes.\n")
+        return
+    }
     val message = ctx.formParam("message")
     if (message == null) {
         ctx.status(400)
-        ctx.result("No message provided")
+        ctx.result("No message provided\n")
         return
     }
-    /*if (message.length > 100) {
+    if (message.length > 1000) {
         ctx.status(400)
-        ctx.result("Message too long")
+        ctx.result("Message too long\n")
         return
-    }*/
+    }
     val bold = ctx.booleanFormParam("bold")
     val underline = ctx.booleanFormParam("underline")
     val whiteOnBlack = ctx.booleanFormParam("white_on_black")
+    val printAsQr = ctx.booleanFormParam("print_as_qr")
 
     val justification = when (ctx.formParam("justification")) {
         "center" -> EscPosConst.Justification.Center
@@ -44,12 +61,20 @@ fun messageEndpoint(ctx: Context) {
     val image = ctx.uploadedFile("image")?.takeIf { it.size() > 0 }
     val imagePosition = ImagePosition.valueOf(ctx.formParam("image_position") ?: "above")
 
-    if (imagePosition == ImagePosition.above && image != null) printImage(image)
-    printMessage(style, message)
-    if (imagePosition == ImagePosition.below && image != null) printImage(image)
+    if (image != null) {
+        enqueuePrintJob(
+            PrintJob.PrintImage(
+                image.content().readAllBytes(),
+                imagePosition,
+                PrintJob.PrintMessage(message, style)
+            )
+        )
+    } else if (printAsQr) {
+        enqueuePrintJob(PrintJob.PrintQrCode(message))
+    } else {
+        enqueuePrintJob(PrintJob.PrintMessage(message, style))
+    }
 
-    pos.feed(6)
-    pos.cut(EscPos.CutMode.FULL)
     ctx.result("Printed Successfully")
 }
 

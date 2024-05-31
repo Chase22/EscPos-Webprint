@@ -15,6 +15,8 @@ dependencies {
     implementation("com.github.anastaciocintra:escpos-coffee:4.1.0")
     implementation("ch.qos.logback:logback-classic:1.5.6")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
+    implementation("io.github.g0dkar:qrcode-kotlin:4.1.1")
+    implementation("com.bucket4j:bucket4j_jdk17-core:8.12.1")
     testImplementation(kotlin("test"))
 }
 

@@ -73,6 +73,7 @@ fun FlowContent.options() {
         checkboxRow("bold", "Bold")
         checkboxRow("underline", "Underline")
         checkboxRow("white_on_black", "White on Black")
+        checkboxRow("print_as_qr", "Print message as QR Code")
     }
 }
 
@@ -145,9 +146,6 @@ fun FlowContent.radioRow(name: String, value: String, label: String, checked: Bo
 fun FlowContent.api() {
     div(classes = "api") {
         h3 { +"API" }
-        a(href = "/assets/openapi.yaml") {
-            +"OpenAPI Specification"
-        }
         p {
             +"POST /message"
         }
@@ -162,6 +160,8 @@ fun FlowContent.api() {
                 +"message: required\n"
                 +"bold: true|false, default: false\n"
                 +"underline: true|false, default: false\n"
+                +"white_on_black: true|false, default: false\n"
+                +"print_as_qr: true|false, default: false\n"
                 +"justification: left|right|center, default: left\n"
                 +"font_width: 1-8, default: 1\n"
                 +"font_height: 1-8, default: 1\n"
