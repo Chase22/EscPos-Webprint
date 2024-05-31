@@ -1,8 +1,13 @@
 package de.chasenet
 
+import com.github.anastaciocintra.escpos.EscPos
 import com.github.anastaciocintra.escpos.EscPosConst
 import com.github.anastaciocintra.escpos.Style
 import io.javalin.http.Context
+
+enum class ImagePosition {
+    above, below
+}
 
 fun messageEndpoint(ctx: Context) {
     val message = ctx.formParam("message")
@@ -11,11 +16,11 @@ fun messageEndpoint(ctx: Context) {
         ctx.result("No message provided")
         return
     }
-    if (message.length > 100) {
+    /*if (message.length > 100) {
         ctx.status(400)
         ctx.result("Message too long")
         return
-    }
+    }*/
     val bold = ctx.booleanFormParam("bold")
     val underline = ctx.booleanFormParam("underline")
     val whiteOnBlack = ctx.booleanFormParam("white_on_black")
@@ -36,13 +41,15 @@ fun messageEndpoint(ctx: Context) {
         setColorMode(if (whiteOnBlack) Style.ColorMode.WhiteOnBlack else Style.ColorMode.BlackOnWhite_Default)
     }
 
-    ctx.uploadedFile("image")?.let {
-        if (it.size() > 0) {
-            printImage(it)
-        }
-    }
+    val image = ctx.uploadedFile("image")?.takeIf { it.size() > 0 }
+    val imagePosition = ImagePosition.valueOf(ctx.formParam("image_position") ?: "above")
 
+    if (imagePosition == ImagePosition.above && image != null) printImage(image)
     printMessage(style, message)
+    if (imagePosition == ImagePosition.below && image != null) printImage(image)
+
+    pos.feed(6)
+    pos.cut(EscPos.CutMode.FULL)
     ctx.result("Printed Successfully")
 }
 

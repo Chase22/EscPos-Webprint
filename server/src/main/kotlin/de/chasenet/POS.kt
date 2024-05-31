@@ -23,13 +23,9 @@ fun printMessage(style: Tm88iiStyle, message: String) {
 
     try {
         pos.writeLF(style, message)
-        pos.feed(6)
-        pos.cut(EscPos.CutMode.FULL)
     } catch (e: IOException) {
         resetSocket()
         pos.writeLF(style, message)
-        pos.feed(6)
-        pos.cut(EscPos.CutMode.FULL)
     }
 }
 

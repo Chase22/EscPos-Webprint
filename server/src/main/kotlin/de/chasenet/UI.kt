@@ -6,30 +6,30 @@ import kotlinx.html.stream.createHTML
 
 fun Context.sendHttp() {
     this.html(
-    createHTML().html {
-        lang = "en"
-        head {
-            meta(charset = "UTF-8")
-            title("POS Printer")
-            link(rel = "stylesheet", href = "/assets/style.css")
-        }
-        body {
-            form(
-                action = "/message",
-                method = FormMethod.post,
-                encType = FormEncType.multipartFormData,
-            ) {
-                target = "_blank"
-                autoComplete = false
-                messageInput()
-                options()
-                justification()
-                fontSize("font_height", "Font Height")
-                fontSize("font_width", "Font Width")
+        createHTML().html {
+            lang = "en"
+            head {
+                meta(charset = "UTF-8")
+                title("POS Printer")
+                link(rel = "stylesheet", href = "/assets/style.css")
             }
-            api()
-        }
-    })
+            body {
+                form(
+                    action = "/message",
+                    method = FormMethod.post,
+                    encType = FormEncType.multipartFormData,
+                ) {
+                    target = "_blank"
+                    autoComplete = false
+                    messageInput()
+                    options()
+                    justification()
+                    fontSize("font_height", "Font Height")
+                    fontSize("font_width", "Font Width")
+                }
+                api()
+            }
+        })
 }
 
 fun FlowContent.messageInput() {
@@ -40,8 +40,20 @@ fun FlowContent.messageInput() {
             name = "message"
             placeholder = "Enter your message here"
         }
-        h6{
-            +"Image to be printed above the text"
+        h6 {
+            +"Image to be printed "
+            select {
+                name="image_position"
+                option {
+                    value = "above"
+                    +"above"
+                }
+                option {
+                    value = "below"
+                    +"below"
+                }
+            }
+            +" the text"
         }
         fileInput {
             id = "image"
@@ -66,7 +78,7 @@ fun FlowContent.options() {
 
 fun FlowContent.checkboxRow(name: String, label: String) {
     div(classes = "checkbox_row") {
-        checkBoxInput(name=name) {
+        checkBoxInput(name = name) {
             id = name
             value = "true"
         }
@@ -108,7 +120,7 @@ fun FlowContent.justification() {
     }
 }
 
-fun FlowContent.radioButtons(name: String, vararg values: Pair<String,String>) {
+fun FlowContent.radioButtons(name: String, vararg values: Pair<String, String>) {
     values.forEachIndexed { index, (value, label) ->
         radioRow(name, value, label, index == 0)
     }
@@ -116,8 +128,8 @@ fun FlowContent.radioButtons(name: String, vararg values: Pair<String,String>) {
 
 fun FlowContent.radioRow(name: String, value: String, label: String, checked: Boolean = false) {
     div(classes = "radio_row") {
-        radioInput(name=name) {
-            if(checked) {
+        radioInput(name = name) {
+            if (checked) {
                 attributes["checked"] = "checked"
             }
             this.value = value
