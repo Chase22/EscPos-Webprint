@@ -3,7 +3,7 @@ package de.chasenet
 import io.javalin.Javalin
 import io.javalin.http.staticfiles.Location
 
-fun runServer() {
+fun runServer(serverPort: Int) {
     Javalin.create { config ->
         config.staticFiles.add { staticFiles ->
             staticFiles.location = Location.CLASSPATH
@@ -19,5 +19,5 @@ fun runServer() {
         .post("/image") { ctx ->
             ctx.uploadedFiles()
         }
-        .start(8080)
+        .start(serverPort)
 }
