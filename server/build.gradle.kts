@@ -10,8 +10,7 @@ repositories {
 
 dependencies {
     implementation("io.javalin:javalin:6.1.3")
-    implementation(project(":escpos-coffee"))
-    //implementation("com.github.anastaciocintra:escpos-coffee:4.1.0")
+    implementation("com.github.anastaciocintra:escpos-coffee:4.1.0")
     implementation("ch.qos.logback:logback-classic:1.5.6")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
     testImplementation(kotlin("test"))
