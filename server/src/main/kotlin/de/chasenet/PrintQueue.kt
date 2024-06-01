@@ -4,10 +4,10 @@ import com.github.anastaciocintra.escpos.EscPos
 import org.eclipse.jetty.util.BlockingArrayQueue
 import org.slf4j.LoggerFactory
 
-sealed class PrintJob {
-    data class PrintMessage(val message: String, val style: Tm88iiStyle) : PrintJob()
-    class PrintImage(val image: ByteArray, val imagePosition: ImagePosition, val printMessage: PrintMessage) : PrintJob()
-    data class PrintQrCode(val data: String): PrintJob()
+sealed class PrintJob(open val child: PrintJob? = null) {
+    data class PrintMessage(val message: String, val style: Tm88iiStyle, override val child: PrintJob? = null) : PrintJob()
+    class PrintImage(val image: ByteArray, child: PrintJob? = null) : PrintJob(child)
+    data class PrintQrCode(val data: String, override val child: PrintJob? = null): PrintJob()
 }
 
 val printQueuesize: Int
@@ -32,33 +32,33 @@ class PrinterThread: Runnable {
             try {
                 val job = printQueue.take()
                 LOGGER.info("Dequeued ${job.javaClass.simpleName}")
-                when (job) {
-                    is PrintJob.PrintMessage -> {
-                        printedMessages.inc()
-                        printedCharacters += job.message.length
-                        printMessage(job.style, job.message)
-                    }
-                    is PrintJob.PrintImage -> {
-                        printedImages.inc()
-                        if (job.imagePosition == ImagePosition.above) {
-                            printImage(job.image)
-                        }
-                        printedCharacters += job.printMessage.message.length
-                        printMessage(job.printMessage.style, job.printMessage.message)
-                        if (job.imagePosition == ImagePosition.below) {
-                            printImage(job.image)
-                        }
-                    }
-                    is PrintJob.PrintQrCode -> {
-                        printQr(job.data)
-                    }
-                }
+                processJob(job)
                 pos.feed(6)
                 pos.cut(EscPos.CutMode.FULL)
             } catch(e:Exception) {
                 LOGGER.error("Error while printing", e)
             }
         }
+    }
+
+    private fun processJob(job: PrintJob) {
+        when (job) {
+            is PrintJob.PrintMessage -> {
+                printedMessages.inc()
+                printedCharacters += job.message.length
+                printMessage(job.style, job.message)
+            }
+
+            is PrintJob.PrintImage -> {
+                printedImages.inc()
+                printImage(job.image)
+            }
+
+            is PrintJob.PrintQrCode -> {
+                printQr(job.data)
+            }
+        }
+        job.child?.let(this::processJob)
     }
 
 }
