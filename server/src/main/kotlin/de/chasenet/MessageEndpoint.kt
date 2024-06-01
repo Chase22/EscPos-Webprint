@@ -75,7 +75,7 @@ fun messageEndpoint(ctx: Context) {
         enqueuePrintJob(PrintJob.PrintMessage(message, style))
     }
 
-    ctx.result("Printed Successfully")
+    ctx.result("Print was enqueued. Printing may take a second. Check /stats for status of the queue\n")
 }
 
 private fun Context.booleanFormParam(key: String) = formParam(key).toBoolean()
