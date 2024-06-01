@@ -4,7 +4,6 @@ import com.github.anastaciocintra.escpos.image.BitonalOrderedDither
 import com.github.anastaciocintra.escpos.image.CoffeeImageImpl
 import com.github.anastaciocintra.escpos.image.EscPosImage
 import com.github.anastaciocintra.escpos.image.RasterBitImageWrapper
-import io.javalin.http.UploadedFile
 import qrcode.QRCode
 import java.awt.Image
 import java.awt.image.BufferedImage
@@ -70,7 +69,7 @@ private fun checkSocket() {
 
 private fun resetSocket() {
     socket.close()
-    socket = Socket("192.168.1.133", 9000)
+    socket = Socket(printerIp, 9000)
     pos.outputStream = socket.getOutputStream()
 }
 
