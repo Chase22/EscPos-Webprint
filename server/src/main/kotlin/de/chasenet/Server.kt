@@ -15,6 +15,17 @@ fun runServer(serverPort: Int) {
 
     }
         .get("/") { ctx -> ctx.sendHttp() }
+        .get("/stats") { ctx ->
+            ctx.result(
+                listOf(
+                    "Printer Thread active: ${printerThread.isAlive}",
+                    "Printer Queue: $printQueuesize",
+                    "Printed Messages: $printedMessages",
+                    "Printed Images: $printedImages",
+                    "Printed Characters: $printedCharacters"
+                ).joinToString("\n")
+            )
+        }
         .post("/message", ::messageEndpoint)
         .post("/image") { ctx ->
             ctx.uploadedFiles()

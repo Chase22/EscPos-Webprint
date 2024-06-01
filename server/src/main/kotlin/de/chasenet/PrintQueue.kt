@@ -1,7 +1,6 @@
 package de.chasenet
 
 import com.github.anastaciocintra.escpos.EscPos
-import io.javalin.http.UploadedFile
 import org.eclipse.jetty.util.BlockingArrayQueue
 import org.slf4j.LoggerFactory
 
@@ -11,8 +10,14 @@ sealed class PrintJob {
     data class PrintQrCode(val data: String): PrintJob()
 }
 
-private val LOGGER = LoggerFactory.getLogger("PrinterQueue")
+val printQueuesize: Int
+    get() = printQueue.size
 
+var printedImages: Int = 0
+var printedMessages: Int = 0
+var printedCharacters: Int = 0
+
+private val LOGGER = LoggerFactory.getLogger("PrinterQueue")
 
 private val printQueue = BlockingArrayQueue<PrintJob>()
 
@@ -29,12 +34,16 @@ class PrinterThread: Runnable {
                 LOGGER.info("Dequeued ${job.javaClass.simpleName}")
                 when (job) {
                     is PrintJob.PrintMessage -> {
+                        printedMessages.inc()
+                        printedCharacters += job.message.length
                         printMessage(job.style, job.message)
                     }
                     is PrintJob.PrintImage -> {
+                        printedImages.inc()
                         if (job.imagePosition == ImagePosition.above) {
                             printImage(job.image)
                         }
+                        printedCharacters += job.printMessage.message.length
                         printMessage(job.printMessage.style, job.printMessage.message)
                         if (job.imagePosition == ImagePosition.below) {
                             printImage(job.image)
