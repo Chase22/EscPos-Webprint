@@ -1,5 +1,3 @@
-package de.chasenet
-
 import com.github.anastaciocintra.escpos.EscPos
 import java.io.OutputStream
 

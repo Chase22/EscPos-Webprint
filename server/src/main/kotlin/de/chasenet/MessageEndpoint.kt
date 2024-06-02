@@ -1,5 +1,6 @@
 package de.chasenet
 
+import Tm88iiStyle
 import com.github.anastaciocintra.escpos.EscPosConst
 import com.github.anastaciocintra.escpos.Style
 import com.github.anastaciocintra.escpos.Style.ColorMode
@@ -67,9 +68,9 @@ fun messageEndpoint(ctx: Context) {
     if (image != null) {
         enqueueImage(imagePosition, image, message, style)
     } else if (printAsQr) {
-        enqueuePrintJob(PrintJob.PrintQrCode(message))
+        printerAdapter.enqueue(PrintJob.PrintQrCode(message))
     } else {
-        enqueuePrintJob(PrintJob.PrintMessage(message, style))
+        printerAdapter.enqueue(PrintJob.PrintMessage(message, style))
     }
 
     ctx.result("Print was enqueued. Printing may take a second. Check /stats for status of the queue\n")
@@ -82,11 +83,11 @@ private fun enqueueImage(
     style: Tm88iiStyle
 ) {
     if (imagePosition == ImagePosition.ABOVE) {
-        enqueuePrintJob(
+        printerAdapter.enqueue(
             PrintJob.PrintImage(image.toByteArray(), PrintJob.PrintMessage(message, style))
         )
     } else {
-        enqueuePrintJob(
+        printerAdapter.enqueue(
             PrintJob.PrintMessage(message, style, PrintJob.PrintImage(image.toByteArray()))
         )
     }

@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":printAdapter"))
     implementation("io.javalin:javalin:6.1.3")
     implementation("com.github.anastaciocintra:escpos-coffee:4.1.0")
     implementation("ch.qos.logback:logback-classic:1.5.6")

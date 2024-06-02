@@ -1,0 +1,13 @@
+[versions]
+kotlin = "2.0.0"
+qrcode = "4.1.1"
+ecspos = "4.1.0"
+slf4j = "2.0.13"
+
+[libraries]
+qrcode = { module = "io.github.g0dkar:qrcode-kotlin", version.ref="qrcode" }
+escposCoffee = { module = "com.github.anastaciocintra:escpos-coffee", version.ref="ecspos" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref="slf4j" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

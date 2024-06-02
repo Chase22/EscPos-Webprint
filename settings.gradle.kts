@@ -4,3 +4,4 @@ plugins {
 rootProject.name = "webPrint"
 
 include("server")
+include("printAdapter")
