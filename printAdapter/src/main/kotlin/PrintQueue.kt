@@ -1,3 +1,4 @@
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
 import java.util.concurrent.BlockingQueue
@@ -75,6 +76,6 @@ class PrinterThread(
     }
 
     companion object {
-        val LOGGER = LoggerFactory.getLogger(PrinterThread::class.java)
+        val LOGGER: Logger = LoggerFactory.getLogger(PrinterThread::class.java)
     }
 }

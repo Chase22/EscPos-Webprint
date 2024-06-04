@@ -1,6 +1,6 @@
 class PrintAdapter(
-    private val printerIp: String,
-    private val printerPort: Int = 9000
+    printerIp: String,
+    printerPort: Int = 9000
 ) {
     private val printerQueue = PrintQueue()
     private val printerAdapter = EscPosAdapter(printerIp, printerPort)
