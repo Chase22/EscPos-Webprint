@@ -7,9 +7,7 @@ import qrcode.QRCode
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
-import java.io.IOException
 import java.io.InputStream
-import java.net.Socket
 import javax.imageio.ImageIO
 
 class EscPosAdapter(
@@ -17,53 +15,29 @@ class EscPosAdapter(
     private val printerPort: Int
 ) {
     private val bitImageWrapper = RasterBitImageWrapper()
-    private var socket = Socket(printerHost, printerPort)
-    private val pos = TM88II(socket.getOutputStream())
+    private val retrySocket = RetryingSocket(printerHost, printerPort)
+    private val pos = TM88II(retrySocket)
 
     fun printMessage(style: Tm88iiStyle, message: String) {
-        checkSocket()
-        try {
-            pos.writeLF(style, message)
-        } catch (e: IOException) {
-            resetSocket()
-            pos.writeLF(style, message)
-        }
+        pos.writeLF(style, message)
     }
 
     fun printImage(image: ByteArray) {
-        checkSocket()
         val convertedImage = readImage(ByteArrayInputStream(image))
-        try {
-            pos.write(bitImageWrapper, convertedImage)
-        } catch (e: IOException) {
-            resetSocket()
-            pos.write(bitImageWrapper, convertedImage)
-        }
+        pos.write(bitImageWrapper, convertedImage)
     }
 
     fun printImage(image: BufferedImage) {
-        checkSocket()
         val convertedImage = image.resize(512).let(::CoffeeImageImpl).let {
             EscPosImage(it, BitonalOrderedDither())
         }
-        try {
-            pos.write(bitImageWrapper, convertedImage)
-        } catch (e: IOException) {
-            resetSocket()
-            pos.write(bitImageWrapper, convertedImage)
-        }
+        pos.write(bitImageWrapper, convertedImage)
     }
 
     fun printQr(message: String) {
-        checkSocket()
         val qrCode = qrCode(message)
         val image = readImage(ByteArrayInputStream(qrCode.renderToBytes()))
-        try {
-            pos.write(bitImageWrapper, image)
-        } catch (e: IOException) {
-            resetSocket()
-            pos.write(bitImageWrapper, image)
-        }
+        pos.write(bitImageWrapper, image)
     }
 
     fun feedAndCut(feed: Int = 6) {
@@ -77,18 +51,6 @@ class EscPosAdapter(
         }
 
     private fun qrCode(message: String) = QRCode.ofSquares().build(message)
-
-    private fun checkSocket() {
-        if (socket.isOutputShutdown || socket.isClosed || !socket.isConnected) {
-            resetSocket()
-        }
-    }
-
-    private fun resetSocket() {
-        socket.close()
-        socket = Socket(printerHost, printerPort)
-        pos.outputStream = socket.getOutputStream()
-    }
 
     private fun BufferedImage.resize(width: Int = -1, height: Int = -1) =
         getScaledInstance(
