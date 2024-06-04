@@ -16,13 +16,14 @@ fun runServer(serverPort: Int) {
     }
         .get("/") { ctx -> ctx.sendHttp() }
         .get("/stats") { ctx ->
+            val stats = printerAdapter.stats
             ctx.result(
                 listOf(
-                    "Printer Thread active: ${printerThread.isAlive}",
-                    "Printer Queue: $printQueuesize",
-                    "Printed Messages: $printedMessages",
-                    "Printed Images: $printedImages",
-                    "Printed Characters: $printedCharacters"
+                    "Printer Thread active: ${stats.threadActive}",
+                    "Printer Queue: ${stats.queueSize}",
+                    "Printed Messages: ${stats.printedMessages}",
+                    "Printed Images: ${stats.printedImages}",
+                    "Printed Characters: ${stats.printedCharacters}"
                 ).joinToString("\n")
             )
         }

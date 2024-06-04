@@ -41,13 +41,24 @@ class EscPosAdapter(
         }
     }
 
+    fun printImage(image: BufferedImage) {
+        checkSocket()
+        val convertedImage = image.resize(512).let(::CoffeeImageImpl).let {
+            EscPosImage(it, BitonalOrderedDither())
+        }
+        try {
+            pos.write(bitImageWrapper, convertedImage)
+        } catch (e: IOException) {
+            resetSocket()
+            pos.write(bitImageWrapper, convertedImage)
+        }
+    }
 
     fun printQr(message: String) {
         checkSocket()
         val qrCode = qrCode(message)
         val image = readImage(ByteArrayInputStream(qrCode.renderToBytes()))
         try {
-
             pos.write(bitImageWrapper, image)
         } catch (e: IOException) {
             resetSocket()

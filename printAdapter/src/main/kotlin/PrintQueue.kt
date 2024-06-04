@@ -1,4 +1,5 @@
 import org.slf4j.LoggerFactory
+import java.awt.image.BufferedImage
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -7,6 +8,7 @@ sealed class PrintJob(open val child: PrintJob? = null) {
         PrintJob()
 
     class PrintImage(val image: ByteArray, child: PrintJob? = null) : PrintJob(child)
+    class PrintBufferedImage(val image: BufferedImage, child: PrintJob? = null) : PrintJob(child)
     data class PrintQrCode(val data: String, override val child: PrintJob? = null) : PrintJob()
 }
 
@@ -57,6 +59,10 @@ class PrinterThread(
             }
 
             is PrintJob.PrintImage -> {
+                printedImages.inc()
+                printAdapter.printImage(job.image)
+            }
+            is PrintJob.PrintBufferedImage -> {
                 printedImages.inc()
                 printAdapter.printImage(job.image)
             }
