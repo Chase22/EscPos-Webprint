@@ -11,8 +11,8 @@ import java.io.InputStream
 import javax.imageio.ImageIO
 
 class EscPosAdapter(
-    private val printerHost: String,
-    private val printerPort: Int
+    printerHost: String,
+    printerPort: Int
 ) {
     private val bitImageWrapper = RasterBitImageWrapper()
     private val retrySocket = RetryingSocket(printerHost, printerPort)
@@ -41,7 +41,7 @@ class EscPosAdapter(
     }
 
     fun feedAndCut(feed: Int = 6) {
-        pos.feed(6)
+        pos.feed(feed)
         pos.cut(EscPos.CutMode.FULL)
     }
 
