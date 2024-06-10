@@ -5,3 +5,4 @@ rootProject.name = "webPrint"
 
 include("server")
 include("printAdapter")
+include("svelteui")
